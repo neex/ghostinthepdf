@@ -1,0 +1,31 @@
+%!PS
+
+/pagewidth currentpagedevice /PageSize get 1 get def
+
+/curpos pagewidth def
+
+/interval pagewidth 20 div def
+
+/Courier findfont interval scalefont setfont
+
+/showline {
+    /curpos curpos interval sub def
+    interval 1 mul curpos moveto
+    show
+} def
+
+/concat { exch dup length
+  2 index length add string
+  dup dup 4 2 roll copy length
+  4 -1 roll putinterval
+} bind def
+
+0 1 5 { () showline pop } for
+(Ghostscript detected) showline
+() showline
+(Version  : ) revision 100 div 0.001 add 100 string cvs dup 0 exch length 1 sub getinterval concat showline
+(Revision : ) revisiondate 8 string cvs concat showline
+
+showpage
+
+0 quit
