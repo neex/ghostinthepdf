@@ -30,13 +30,14 @@ func main() {
 }
 
 func genPDFWithPS(psData []byte) []byte {
+	width, height := 2480, 3508
 	pdf := gofpdf.NewCustom(&gofpdf.InitType{
 		OrientationStr: "p",
 		UnitStr:        "pt",
 		SizeStr:        "",
 		Size: gofpdf.SizeType{
-			Wd: float64(2480),
-			Ht: float64(3508),
+			Wd: float64(width),
+			Ht: float64(height),
 		},
 		FontDirStr: ".",
 	})
@@ -60,16 +61,20 @@ func genPDFWithPS(psData []byte) []byte {
 	_, _ = zw.Write(psData)
 	_ = zw.Close()
 
+	pdf.SetDrawColor(0, 0, 0)
+	pdf.Rect(0, 0, float64(width), float64(height), "F")
+
+	pdf.SetTextColor(0, 255, 0)
+
 	pdf.AddFontFromBytes("PSPoeb", "", descriptor, gzFontBuf.Bytes())
 	pdf.SetFont("PSPoeb", "", float64(size))
-
-	pdf.SetTextColor(0, 0, 0)
-	pdf.MoveTo(200, float64(800))
-	pdf.Cell(0, 0, "Ghostscript not detected")
 	pdf.MoveTo(200, float64(1200))
 	pdf.Cell(0, 0, "ABCDEFGHIJKLM")
 	pdf.MoveTo(200, float64(1400))
 	pdf.Cell(0, 0, "NOPQRSTUVWXYZ")
+	pdf.SetFont("Courier", "", float64(size))
+	pdf.MoveTo(200, float64(800))
+	pdf.Cell(0, 0, "No Ghostscript / error")
 	pdf.SetProducer("", false)
 	pdf.SetCreationDate(time.Unix(0, 0))
 	pdf.SetModificationDate(time.Unix(0, 0))
